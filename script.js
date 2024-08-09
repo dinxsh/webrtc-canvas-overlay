@@ -1,10 +1,15 @@
-
 async function startWebRTC() {
     const video = document.getElementById('video');
     const videoSource = document.getElementById('videoSource');
     try {
         const devices = await navigator.mediaDevices.enumerateDevices();
+        console.log('Devices found:', devices);
+        
         const videoDevices = devices.filter(device => device.kind === 'videoinput');
+        if (videoDevices.length === 0) {
+            throw new Error('No video input devices found');
+        }
+
         videoDevices.forEach(device => {
             const option = document.createElement('option');
             option.value = device.deviceId;
@@ -13,11 +18,15 @@ async function startWebRTC() {
         });
 
         videoSource.addEventListener('change', async () => {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { deviceId: { exact: videoSource.value } },
-                audio: false
-            });
-            video.srcObject = stream;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: { exact: videoSource.value } },
+                    audio: false
+                });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing selected video device.', error);
+            }
         });
 
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -27,6 +36,7 @@ async function startWebRTC() {
         video.srcObject = stream;
     } catch (error) {
         console.error('Error accessing media devices.', error);
+        alert('Error accessing media devices: ' + error.message);
     }
 }
 
