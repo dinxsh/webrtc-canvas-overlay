@@ -5,6 +5,8 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@blueprintjs/icons": "^5.11.0",
+    "@meronex/icons": "^4.0.0",
     "polotno": "2.10.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
